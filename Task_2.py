@@ -1,43 +1,49 @@
 import sys
-from datetime import timedelta
 
 
-def read_shelter_record_file():
-    # record_file = input('Enter the file path : ')
-    lines = []
+def read_shelter_record_file(file_path):
     try:
-        with open("D:\The British College\Level 4\Semester 1\FOCP (Fundamentals of Computer Programming)\Component B (60%)\shelter_2023-08-26.log", 'r') as file:
-            lines = file.readlines()
+        with open(file_path, 'r') as file:
+            in_lines = file.readlines()
+
+        in_entry_list = []
+        in_exit_list = []
+        in_cat_list = []
+
+        for record_lines in in_lines:
+            if record_lines.strip() == 'END':
+                break
+
+            reading_lines = record_lines.strip().split(',')
+            cat_type, entry_time, exit_time = reading_lines
+
+            entry_time = int(entry_time)
+            exit_time = int(exit_time)
+
+            in_entry_list.append(entry_time)
+            in_exit_list.append(exit_time)
+            in_cat_list.append(cat_type)
+
+        return in_cat_list, in_entry_list, in_exit_list
+
     except FileNotFoundError:
-        print("Cannot open")
+        print(f'Cannot open "{file_path}"!')
     except Exception as e:
         print(f'An error occurred: {e}')
-    return lines
+        # Return default values if an error occurs
+        return [], [], []
 
 
-def separate_time(read_lines):
-    separated_values = []
-    for in_line in read_lines:
-        if in_line.strip() == 'END':
-            break
-
-        separated_values.append(in_line.strip().split(','))
-    return separated_values
-
-
-def calculate_visited_time(in_entry_time, in_exit_time, in_cat_type):
-    in_total_time_in_house = 0
-    in_cat_visit_durations = []
+def calculate_visited_time(in_cat_visit_durations, in_entry_time, in_exit_time, in_cat_type):
+    # in_total_time_in_house = timedelta()
     visit_duration = in_exit_time - in_entry_time
-    in_total_time_in_house += timedelta(minutes=visit_duration)
     if in_cat_type == 'OURS':
         in_cat_visit_durations.append(visit_duration)
+    in_total_time_in_house = sum(in_cat_visit_durations)
     return in_total_time_in_house, in_cat_visit_durations
 
 
-def count_cat_entry(in_cat_type):
-    in_cat_visits = 0
-    in_intruder_cat_visits = 0
+def count_cat_entry(in_cat_visits, in_intruder_cat_visits, in_cat_type):
     if in_cat_type == 'OURS':
         in_cat_visits += 1
     elif in_cat_type == 'THEIRS':
@@ -58,40 +64,44 @@ def statistical_overview(in_cat_visits, in_cat_visit_durations):
 def output_for_cat_shelter(in_cat_visits, in_intruder_cat_visits, in_total_time_in_house, in_average_visit_length,
                            in_longest_visit,
                            in_shortest_visit):
-    print(f"""Log File Analysis"
-    ========================
-    Cat Visits: {in_cat_visits}")
-    Other Cats: {in_intruder_cat_visits}\n")
-    Total Time in House: {str(in_total_time_in_house)}\n")
-    Average Visit Length: {int(in_average_visit_length)} Minutes")
-    Longest Visit: {in_longest_visit} Minutes")
-    Shortest Visit: {in_shortest_visit} Minutes\n""")
+    total_hours, remaining_minutes = divmod(in_total_time_in_house, 60)
+    total_minutes = int(remaining_minutes)
+    print(f"""            Log File Analysis
+    ==================================
+    Cat Visits: {in_cat_visits}
+    Other Cats: {in_intruder_cat_visits}
+    Total Time in House: {int(total_hours)} Hours, {total_minutes} Minutes
+    Average Visit Length: {int(in_average_visit_length)} Minutes
+    Longest Visit: {in_longest_visit} Minutes
+    Shortest Visit: {in_shortest_visit} Minutes""")
 
 
 # calling the functions
-read_line = read_shelter_record_file()
-record_list = separate_time(read_line)
+if len(sys.argv) != 2:
+    print("Missing command line argument!")
+else:
+    data_file_path = sys.argv[1]
+    cat_list, entry_list, exit_list = read_shelter_record_file(data_file_path)
 
-for lines in read_line:
-    # total_time_in_house, cat_visit_durations = calculate_visited_time(line[1], line[2],
-    #                                                                       record_list[i][0])
-    if len(lines) >= 3:
-        line = lines.strip().split(',')
-        if lines == 'END':
-            break
-        else:
-            total_time_in_house, cat_visit_durations = calculate_visited_time(line[1], line[2], line[0])
+    cat_visit_list = []
+    for i in range(0, len(cat_list)):
+        total_time_in_house, cat_visit_durations = calculate_visited_time(
+            cat_visit_list, entry_list[i], exit_list[i], cat_list[i]
+        )
 
-cat_visits = []
-for lines in read_line:
-    i = 0
-    if lines == 'END':
-        break
-    cat_visits, intruder_cat_visits = count_cat_entry(record_list[i][0])
-    i += 1
+    cat_visits = 0
+    intruder_cat_visits = 0
+    for i in range(0, len(cat_list)):
+        cat_visits, intruder_cat_visits = count_cat_entry(
+            cat_visits, intruder_cat_visits, cat_list[i]
+        )
 
-average_visit_length, longest_visit, shortest_visit = statistical_overview(cat_visits, cat_visit_durations)
+    average_visit_length, longest_visit, shortest_visit = statistical_overview(
+        cat_visits, cat_visit_durations
+    )
 
-# final output function
-output_for_cat_shelter(cat_visits, intruder_cat_visits, total_time_in_house, average_visit_length, longest_visit,
-                       shortest_visit)
+    # final output
+    output_for_cat_shelter(
+        cat_visits, intruder_cat_visits, total_time_in_house, average_visit_length,
+        longest_visit, shortest_visit
+    )
