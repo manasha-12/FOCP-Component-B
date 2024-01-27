@@ -30,12 +30,12 @@ def read_shelter_record_file(file_path):
         print(f'Cannot open "{file_path}"!')
     except Exception as e:
         print(f'An error occurred: {e}')
-        # Return default values if an error occurs
+        # Return default empty list if an error occurs
         return [], [], []
 
 
+# cat_visit_list = [] initialized during function call for 'in_cat_visit_duration'
 def calculate_visited_time(in_cat_visit_durations, in_entry_time, in_exit_time, in_cat_type):
-    # in_total_time_in_house = timedelta()
     visit_duration = in_exit_time - in_entry_time
     if in_cat_type == 'OURS':
         in_cat_visit_durations.append(visit_duration)
@@ -43,6 +43,7 @@ def calculate_visited_time(in_cat_visit_durations, in_entry_time, in_exit_time, 
     return in_total_time_in_house, in_cat_visit_durations
 
 
+# cat_visits and intruder_cat_visits initialized during function call
 def count_cat_entry(in_cat_visits, in_intruder_cat_visits, in_cat_type):
     if in_cat_type == 'OURS':
         in_cat_visits += 1
@@ -70,7 +71,9 @@ def output_for_cat_shelter(in_cat_visits, in_intruder_cat_visits, in_total_time_
     ==================================
     Cat Visits: {in_cat_visits}
     Other Cats: {in_intruder_cat_visits}
+    
     Total Time in House: {int(total_hours)} Hours, {total_minutes} Minutes
+    
     Average Visit Length: {int(in_average_visit_length)} Minutes
     Longest Visit: {in_longest_visit} Minutes
     Shortest Visit: {in_shortest_visit} Minutes""")
@@ -97,7 +100,7 @@ else:
         )
 
     average_visit_length, longest_visit, shortest_visit = statistical_overview(
-        cat_visits, cat_visit_durations
+        cat_visits, cat_visit_list
     )
 
     # final output
