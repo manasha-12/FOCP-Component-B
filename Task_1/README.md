@@ -6,12 +6,14 @@ The script prompts users to input their pizza preferences, such as the number of
 
 
 *** Features ***
+
 User-friendly menu and input system.
 Dynamic pricing based on the number of pizzas, delivery option, and special discount offers.
 Clear and detailed bill output.
 
 
 *** How to Use ***
+
 Run the Program
 Follow the prompts to input your pizza preferences:
    *  Number of pizzas to order.
