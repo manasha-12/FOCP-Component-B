@@ -21,4 +21,5 @@ Follow the prompts to input your pizza preferences:
    *  Delivery preference (Yes/No).
    *  Order placement day (Tuesday/Non-Tuesday).
    *  App usage for ordering (Yes/No).
+
 The script will calculate the total price based on your inputs and display a detailed bill.
