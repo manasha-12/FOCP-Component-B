@@ -15,6 +15,7 @@ Clear and detailed bill output.
 *** How to Use ***
 
 Run the Program
+
 Follow the prompts to input your pizza preferences:
    *  Number of pizzas to order.
    *  Delivery preference (Yes/No).
