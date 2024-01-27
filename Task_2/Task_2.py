@@ -67,16 +67,18 @@ def output_for_cat_shelter(in_cat_visits, in_intruder_cat_visits, in_total_time_
                            in_shortest_visit):
     total_hours, remaining_minutes = divmod(in_total_time_in_house, 60)
     total_minutes = int(remaining_minutes)
-    print(f"""            Log File Analysis
+    print(f"""              
+    
+            Log File Analysis
     ==================================
-    Cat Visits: {in_cat_visits}
-    Other Cats: {in_intruder_cat_visits}
-    
-    Total Time in House: {int(total_hours)} Hours, {total_minutes} Minutes
-    
-    Average Visit Length: {int(in_average_visit_length)} Minutes
-    Longest Visit: {in_longest_visit} Minutes
-    Shortest Visit: {in_shortest_visit} Minutes""")
+    Cat Visits:          {str(in_cat_visits).ljust(20)}
+    Other Cats:          {str(in_intruder_cat_visits).ljust(20)}
+
+    Total Time in House: {f"{int(total_hours)} Hours, {total_minutes} Minutes".ljust(20)}
+
+    Average Visit Length: {f"{int(in_average_visit_length)} Minutes".ljust(20)}
+    Longest Visit:        {f"{str(in_longest_visit)} Minutes".ljust(20)}
+    Shortest Visit:       {f"{str(in_shortest_visit)} Minutes".ljust(20)}""")
 
 
 # calling the functions
